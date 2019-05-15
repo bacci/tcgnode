@@ -3,30 +3,21 @@
 const Deck = use('App/Library/Deck');
 const Card = use('App/Library/Card');
 const Hand = use('App/Library/Hand');
+const Game = use('App/Library/Game');
 
 class DefaultController {
 
-    async index() {
+    async game() {
+
+        var players = ["Jace","Teferi", "Jhoira", "Kasmina"];
 
         var hand = new Hand();
         var hand2 = new Hand();
-        var player1 = "Jace";
-        var player2 = "Teferi";
 
         var limite = 10;
         var acumulado = 0;
 
         var cards = [];
-
-        for(var i = 0; i < 4; i++) {
-            var rand = this.randomIntInc(0,3);
-            hand.addCard(new Card(this.numeroPorExtenso(rand), rand));
-        }
-
-        for(var i = 0; i < 4; i++) {
-            var rand = this.randomIntInc(0,3);
-            hand2.addCard(new Card(this.numeroPorExtenso(rand), rand));
-        }
 
         var temp = [];
         for(var i = 0; i < 40; i++) {
@@ -37,7 +28,60 @@ class DefaultController {
 
         var deck = new Deck(temp);
 
+        // cada um compra 4 cartas
+        for(var i = 0; i < 4; i++) {
+            hand.addCard(deck.getFirstCard());
+            hand2.addCard(deck.getFirstCard());
+        }
+
         var turnos = 60;
+        var qtd_players = players.length;
+
+        try {
+            var game = new Game(players, limite);
+
+            game.gameOrder();
+           
+            while(!game.over()) {
+                game.nextRound();
+
+                console.log("Turno "+game.getTurn());
+            }
+
+        } catch(e) {
+            console.log("Erro ao criar o jogo: "+e);
+        }
+    }
+    
+    async index() {
+
+        var player1 = "Jace";
+        var player2 = "Teferi";
+
+        var hand = new Hand();
+        var hand2 = new Hand();
+
+        var limite = 10;
+        var acumulado = 0;
+
+        var cards = [];
+
+        var temp = [];
+        for(var i = 0; i < 40; i++) {
+            var rand = this.randomIntInc(0,3);
+
+            temp.push(new Card(this.numeroPorExtenso(rand), rand));
+        }
+
+        var deck = new Deck(temp);
+
+        for(var i = 0; i < 4; i++) {
+            hand.addCard(deck.getFirstCard());
+            hand2.addCard(deck.getFirstCard());
+        }
+
+        var turnos = 60;
+
         for(var i = 0;i < turnos;i++) {
             console.log("Turno: "+i);
             console.log("Cartas no deck: "+deck.cardsInDeck());

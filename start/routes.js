@@ -29,3 +29,4 @@ Route.group(() => {
 }).middleware('auth')
 
 Route.get('/array', 'DefaultController.index')
+Route.get('/game', 'DefaultController.game')
